@@ -3,10 +3,9 @@ package io.github.luviuche.hotel.controller;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import io.github.luviuche.hotel.AbstractIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -16,11 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Web layer integration tests covering the Role CRUD and the 404 error handling.
- * They run under the "test" profile (in-memory H2).
+ * They run against the PostgreSQL container.
  */
-@SpringBootTest
-@ActiveProfiles("test")
-class RoleControllerTest {
+class RoleControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;

@@ -1,12 +1,11 @@
 package io.github.luviuche.hotel.repository;
 
+import io.github.luviuche.hotel.AbstractIntegrationTest;
 import io.github.luviuche.hotel.entity.*;
 import io.github.luviuche.hotel.enums.ActivationStatus;
 import io.github.luviuche.hotel.enums.RoomStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 
@@ -18,9 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * that does not exist. The getXxxId() helpers on the entities made Spring Data
  * generate invalid JPQL; the underscore (findByProperty_Id) prevents that.
  */
-@SpringBootTest
-@ActiveProfiles("test")
-class ForeignKeyDerivedQueriesTest {
+class ForeignKeyDerivedQueriesTest extends AbstractIntegrationTest {
 
     @Autowired private RoleRepository roleRepository;
     @Autowired private UserRepository userRepository;
