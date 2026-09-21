@@ -3,10 +3,9 @@ package io.github.luviuche.hotel.controller;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import io.github.luviuche.hotel.AbstractIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -19,9 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * password never shows up, and foreign keys appear as a plain id (roleId)
  * without tripping lazy loading when the record is read back.
  */
-@SpringBootTest
-@ActiveProfiles("test")
-class UserControllerTest {
+class UserControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -38,7 +35,7 @@ class UserControllerTest {
         // A role to attach the user to.
         String role = mockMvc.perform(post("/api/roles")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"GUEST\"}"))
+                        .content("{\"name\":\"CORPORATE\"}"))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
         int roleId = JsonPath.parse(role).read("$.id", Integer.class);
