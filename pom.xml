@@ -8,11 +8,11 @@
         <version>4.1.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.acm</groupId>
-    <artifactId>ProyectoHotel</artifactId>
+    <groupId>io.github.luviuche</groupId>
+    <artifactId>hotel-pms</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ProyectoHotel</name>
-    <description>ProyectoHotel</description>
+    <name>hotel-pms</name>
+    <description>Hotel property management system</description>
 
     <properties>
         <java.version>25</java.version>

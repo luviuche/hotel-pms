@@ -1,113 +1,103 @@
-# ProyectoHotel
+# hotel-pms
 
-Sistema de Gestión Hotelera — **Segunda Entrega del Proyecto Final**.
+[![build](https://github.com/luviuche/hotel-pms/actions/workflows/build.yml/badge.svg)](https://github.com/luviuche/hotel-pms/actions/workflows/build.yml)
 
-- **Primera entrega:** modelo relacional, entidades JPA, configuración de
-  persistencia y migraciones automáticas de base de datos.
-- **Segunda entrega:** capa funcional del backend — repositorios
-  (`JpaRepository`), servicios con la lógica de negocio y controladores REST con
-  operaciones CRUD completas para todas las entidades.
+A property management system (PMS) for hotel chains, built as a Spring Boot REST
+API. It models the core of hotel operations: chains and their properties, rooms
+and room types, guests and staff, reservations, extra amenities, payments and
+invoices.
 
-La referencia completa de la API REST está en
-[`docs/api-endpoints.md`](docs/api-endpoints.md).
+## Tech stack
 
-## Tecnologías
-
-- Java 17
-- Spring Boot 4.0.6 (Spring Data JPA / Hibernate)
-- PostgreSQL (producción) — H2 en memoria (pruebas)
-- Flyway (migraciones automáticas)
+- Java 25
+- Spring Boot 4.1 (Spring Data JPA / Hibernate)
+- PostgreSQL (in-memory H2 for the test suite)
+- Flyway for schema migrations
 - Maven Wrapper (`mvnw`)
 
-## Requisitos previos
+## Getting started
 
-- JDK 17 instalado.
-- PostgreSQL en ejecución.
-- No necesitas instalar Maven: el proyecto incluye el wrapper.
+### Prerequisites
 
-## 1. Crear la base de datos
+- JDK 25
+- A running PostgreSQL instance
 
-En PostgreSQL (pgAdmin, DBeaver o `psql`) crea una base de datos llamada:
+Maven does not need to be installed: the project ships the wrapper.
 
+### 1. Create the database
+
+```sql
+CREATE DATABASE hotel_pms;
 ```
-proyecto_hotel
-```
 
-## 2. Configurar las credenciales
+### 2. Configure the connection
 
-`src/main/resources/application.properties` lee variables de entorno con
-valores por defecto:
+`src/main/resources/application.properties` reads environment variables and
+falls back to sensible local defaults:
 
-| Variable     | Valor por defecto                                   |
-|--------------|-----------------------------------------------------|
-| `URL_BD`     | `jdbc:postgresql://localhost:5432/proyecto_hotel`   |
-| `USUARIO_BD` | `postgres`                                           |
-| `CLAVE_BD`   | `postgres`                                            |
+| Variable      | Default                                        |
+|---------------|------------------------------------------------|
+| `DB_URL`      | `jdbc:postgresql://localhost:5432/hotel_pms`   |
+| `DB_USER`     | `postgres`                                     |
+| `DB_PASSWORD` | `postgres`                                     |
 
-Si tu usuario/clave coinciden con los valores por defecto no necesitas hacer
-nada. En caso contrario, define las variables antes de ejecutar.
-
-## 3. Ejecutar la aplicación
-
-**Linux / macOS:**
+### 3. Run it
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-**Windows (PowerShell):**
+On startup Flyway creates the whole schema and seeds the catalogue tables.
+Flyway owns the schema; Hibernate only validates that the entities match it
+(`ddl-auto=validate`).
 
-```powershell
-.\mvnw.cmd spring-boot:run
+The API is then available at `http://localhost:8080/api`:
+
+```bash
+curl http://localhost:8080/api/roles
 ```
 
-Al iniciar, Flyway crea automáticamente todas las tablas con la migración
-`src/main/resources/db/migration/V1__crear_tablas.sql`. Flyway es el dueño del
-esquema; Hibernate solo valida que las entidades coincidan (`ddl-auto=validate`).
-
-## 4. Ejecutar las pruebas
+### 4. Run the tests
 
 ```bash
 ./mvnw test
 ```
 
-Las pruebas usan H2 en memoria con el perfil `test` (Flyway desactivado, esquema
-generado por Hibernate). No requieren PostgreSQL.
+The suite runs against in-memory H2 under the `test` profile, so PostgreSQL is
+not required.
 
-## Estructura del proyecto
+## Project layout
 
 ```
-ProyectoHotel/
-├── docs/                                  # Documentación del proyecto
-│   ├── Primera Entrega Proyecto Final 1.pdf   (enunciado entrega 1)
-│   ├── Entrega dos proyecto final.pdf          (enunciado entrega 2)
-│   ├── Documento Técnico (...).docx            (análisis y requerimientos)
-│   ├── modelo-relacional.md                    (diagrama ER + normalización)
-│   └── api-endpoints.md                        (referencia de la API REST)
-├── src/main/java/com/acm/proyectohotel/
-│   ├── ProyectoHotelApplication.java
-│   ├── entidad/                           # Entidades JPA (modelo relacional)
-│   ├── enums/                             # Dominios controlados (estados, etc.)
-│   ├── repositorio/                       # Repositorios JpaRepository (acceso a datos)
-│   ├── servicio/                          # Lógica de negocio y validaciones
-│   ├── controlador/                       # Controladores REST (/api/...)
-│   └── excepcion/                         # Manejo global de errores
+hotel-pms/
+├── docs/
+│   ├── api-reference.md               # REST API reference
+│   └── data-model.md                  # ER diagram and constraints
+├── src/main/java/io/github/luviuche/hotel/
+│   ├── HotelPmsApplication.java
+│   ├── entity/                        # JPA entities
+│   ├── enums/                         # Controlled domains (statuses, types)
+│   ├── repository/                    # Spring Data repositories
+│   ├── service/                       # Business logic and validation
+│   ├── controller/                    # REST endpoints (/api/...)
+│   └── exception/                     # Global error handling
 ├── src/main/resources/
-│   ├── application.properties             # Configuración PostgreSQL
-│   ├── application-test.properties        # Configuración H2 (pruebas)
-│   └── db/migration/                      # Migraciones Flyway
-│       ├── V1__crear_tablas.sql
-│       ├── V2__restricciones_e_indices.sql
-│       └── V3__datos_iniciales.sql
+│   ├── application.properties         # PostgreSQL configuration
+│   ├── application-test.properties    # H2 configuration (tests)
+│   └── db/migration/                  # Flyway migrations
+│       ├── V1__create_tables.sql
+│       ├── V2__constraints_and_indexes.sql
+│       └── V3__seed_data.sql
 └── src/test/java/...
 ```
 
-## Notas
+## Documentation
 
-- El diagrama relacional está en [`docs/modelo-relacional.md`](docs/modelo-relacional.md)
-  (Mermaid, se renderiza en GitHub). Si modificas el modelo, actualiza las
-  entidades, la migración y el diagrama de forma coherente.
-- Para añadir cambios al esquema, crea una **nueva** migración
-  (`V4__...sql`); nunca edites una migración ya aplicada.
-- Los datos de catálogo (`rol`, `tipo_habitacion`) se cargan automáticamente
-  con `V3__datos_iniciales.sql`.
+- [REST API reference](docs/api-reference.md) — endpoints, payloads, status codes.
+- [Data model](docs/data-model.md) — ER diagram, relationships, constraints.
+
+## Working on the schema
+
+Never edit a migration that has already been applied. Add a new one
+(`V4__...sql`) instead, and keep the entities, the migration and the diagram in
+`docs/data-model.md` consistent with each other.
