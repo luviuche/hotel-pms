@@ -1,0 +1,30 @@
+version: 2
+
+updates:
+  # Maven dependencies, including the Spring Boot parent.
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+    groups:
+      # One PR for the whole Spring Boot upgrade instead of one per module.
+      spring-boot:
+        patterns:
+          - "org.springframework.boot:*"
+      test-dependencies:
+        patterns:
+          - "com.h2database:*"
+          - "org.junit*:*"
+
+  # The actions used by the workflows above.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: ci
